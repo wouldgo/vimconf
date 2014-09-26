@@ -235,11 +235,11 @@ set nocompatible
     set ignorecase                                  " by default ignore case
     set nrformats+=alpha                            " incr/decr letters C-a/-x
     set shiftround                                  " be clever with tabs
-    set shiftwidth=4                                " default 8
+    set shiftwidth=2                                " default 8
     set smartcase                                   " sensitive with uppercase
     set smarttab                                    " tab to 0,4,8 etc.
-    set softtabstop=4                               " "tab" feels like <tab>
-    set tabstop=4                                   " replace <TAB> w/4 spaces
+    set softtabstop=2                               " "tab" feels like <tab>
+    set tabstop=2                                   " replace <TAB> w/4 spaces
     """ Only auto-comment newline for block comments {{{
         au FileType c,cpp setlocal comments -=:// comments +=f://
     """ }}}
@@ -369,7 +369,7 @@ set nocompatible
                 call cursor(l, c)
             endfunction
 
-            autocmd FileType c,cpp,conf,css,html,perl,python,sh autocmd 
+            autocmd FileType c,cpp,conf,css,html,perl,python,sh autocmd
                         \BufWritePre <buffer> :call <SID>StripTrailingWhitespace()
         """ }}}
     """ }}}
