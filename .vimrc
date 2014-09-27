@@ -369,8 +369,8 @@ set nocompatible
                 call cursor(l, c)
             endfunction
 
-            autocmd FileType c,cpp,conf,css,html,perl,python,sh autocmd
-                        \BufWritePre <buffer> :call <SID>StripTrailingWhitespace()
+            autocmd FileType c,cpp,conf,css,html,js,perl,python,sh autocmd
+                        \ BufWritePre <buffer> :call <SID>StripTrailingWhitespace()
         """ }}}
     """ }}}
     """ Plugins {{{
