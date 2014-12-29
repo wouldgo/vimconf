@@ -6,7 +6,7 @@ vimconf
 
 Installation
 ------------
-**Required packages:** ctags, ruby
+**Dependencies:** [Exuberant ctags](http://ctags.sourceforge.net/) (tagbar)
 
     git clone https://github.com/timss/vimconf.git
     ln -s vimconf/.vimrc ~/.vimrc
@@ -38,8 +38,7 @@ Preview
 
 ![Preview](http://i.imgur.com/jpevpU7.png "Vim screenshot")
 
-\(Pretty outdated...\)    
-[Writing a small perl-script using Vim](http://youtu.be/DrzAuLsxgwU)
+**Video:** [Writing a small perl-script using Vim](http://youtu.be/DrzAuLsxgwU) (rather outdated)
 
 Suggestions, questions and problems
 -----------------------------------
@@ -63,9 +62,3 @@ Todo
 ----
 * Update preview (gifs)
 * Extract some language/plugin specific configuration to an example file (wiki)?
-* Statusline:
-    * Previously used vim-powerline, then airline and now lightline.
-    * Lightline is much easier to configure, but missing some functionality
-      out of the box.
-    * Interact with tagbar (etc)?
-    * Override tabline changes?

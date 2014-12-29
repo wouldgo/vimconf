@@ -9,7 +9,7 @@ set nocompatible
 
 """ Automatically make needed files and folders on first run
 """ If you don't run *nix you're on your own (as in remove this) {{{
-    call system("mkdir -p $HOME/.vim/{plugin,undo}")
+    call system("mkdir -p $HOME/.vim/{swap,undo}")
     if !filereadable($HOME . "/.vimrc.plugins") | call system("touch $HOME/.vimrc.plugins") | endif
     if !filereadable($HOME . "/.vimrc.first") | call system("touch $HOME/.vimrc.first") | endif
     if !filereadable($HOME . "/.vimrc.last") | call system("touch $HOME/.vimrc.last") | endif
@@ -115,10 +115,15 @@ set nocompatible
         filetype plugin indent on                   " detect file plugin+indent
         syntax on                                   " syntax highlighting
         set background=dark                         " we're using a dark bg
-        colors jellybeans                           " select colorscheme
-        au BufNewFile,BufRead *.txt se ft=sh tw=79  " opens .txt w/highlight
-        au BufNewFile,BufRead *.tex se ft=tex tw=79 " we don't want plaintex
-        au BufNewFile,BufRead *.md se ft=markdown tw=79 " markdown, not modula
+        colorscheme jellybeans                      " colorscheme from plugin
+        """ .txt w/highlight, plaintex is useless, markdown for .md {{{
+            augroup FileTypeRules
+                autocmd!
+                autocmd BufNewFile,BufRead *.txt set ft=sh tw=79
+                autocmd BufNewFile,BufRead *.tex set ft=tex tw=79
+                autocmd BufNewFile,BufRead *.md set ft=markdown tw=79
+            augroup END
+        """ }}}
         """ 256 colors for maximum jellybeans bling. See commit log for info {{{
             if (&term =~ "xterm") || (&term =~ "screen")
                 set t_Co=256
@@ -132,9 +137,10 @@ set nocompatible
         """ Custom highlighting, where NONE uses terminal background {{{
             function! CustomHighlighting()
                 highlight Normal ctermbg=NONE
-                highlight nonText ctermbg=NONE
+                highlight NonText ctermbg=NONE
                 highlight LineNr ctermbg=NONE
                 highlight SignColumn ctermbg=NONE
+                highlight SignColumn guibg=#151515
                 highlight CursorLine ctermbg=235
             endfunction
 
@@ -149,17 +155,15 @@ set nocompatible
         set showcmd                                 " show cmds being typed
         set title                                   " window title
         set vb t_vb=                                " disable beep and flashing
-        set wildignore=.bak,.pyc,.o,.ojb,.a,
-                       \.pdf,.jpg,.gif,.png,
-                       \.avi,.mkv,.so               " ignore said files
+        set wildignore=*.a,*.o,*.so,*.pyc,*.jpg,
+                    \*.jpeg,*.png,*.gif,*.pdf,*.git,
+                    \*.swp,*.swo                    " tab completion ignores
         set wildmenu                                " better auto complete
         set wildmode=longest,list                   " bash-like auto complete
-        """ Encoding {{{
-            " If you're having problems with some characters you can force
-            " UTF-8 if your locale is something else.
-            " WARNING: this will affect encoding used when editing files!
-            "
-            " set encoding=utf-8                    " for character glyphs
+        """ Depending on your setup you may want to enforce UTF-8.
+        """ Should generally be set in your environment LOCALE/$LANG {{{
+            " set encoding=utf-8                    " default $LANG/latin1
+            " set fileencoding=utf-8                " default none
         """ }}}
         """ Gvim {{{
             set guifont=DejaVu\ Sans\ Mono\ 9
@@ -178,7 +182,6 @@ set nocompatible
     set listchars=tab:>\                            " > to highlight <tab>
     set list                                        " displaying listchars
     set mouse=                                      " disable mouse
-    set nolist                                      " wraps to whole words
     set noshowmode                                  " hide mode cmd line
     set noexrc                                      " don't use other .*rc(s)
     set nostartofline                               " keep cursor column pos
@@ -205,10 +208,12 @@ set nocompatible
         set showmatch                               " tmpjump to match-bracket
     """ }}}
     """ Return to last edit position when opening files {{{
-        autocmd BufReadPost *
-            \ if line("'\"") > 0 && line("'\"") <= line("$") |
-            \     exe "normal! g`\"" |
-            \ endif
+        augroup LastPosition
+            autocmd! BufReadPost *
+                \ if line("'\"") > 0 && line("'\"") <= line("$") |
+                \     exe "normal! g`\"" |
+                \ endif
+        augroup END
     """ }}}
 """ }}}
 """ Files {{{
@@ -217,13 +222,28 @@ set nocompatible
     set confirm                                     " confirm changed files
     set noautowrite                                 " never autowrite
     set nobackup                                    " disable backups
-    set updatecount=50                              " update swp after 50chars
     """ Persistent undo. Requires Vim 7.3 {{{
         if has('persistent_undo') && exists("&undodir")
             set undodir=$HOME/.vim/undo/            " where to store undofiles
             set undofile                            " enable undofile
             set undolevels=500                      " max undos stored
             set undoreload=10000                    " buffer stored undos
+        endif
+    """ }}}
+    """ Swap files, unless vim is invoked using sudo. Inspired by tejr's vimrc
+    """ https://github.com/tejr/dotfiles/blob/master/vim/vimrc {{{
+        if !strlen($SUDO_USER)
+            set directory^=$HOME/.vim/swap//        " default cwd, // full path
+            set swapfile                            " enable swap files
+            set updatecount=50                      " update swp after 50chars
+            """ Don't swap tmp, mount or network dirs {{{
+                augroup SwapIgnore
+                    autocmd! BufNewFile,BufReadPre /tmp/*,/mnt/*,/media/*
+                                \ setlocal noswapfile
+                augroup END
+            """ }}}
+        else
+            set noswapfile                          " dont swap sudo'ed files
         endif
     """ }}}
 """ }}}
@@ -241,7 +261,15 @@ set nocompatible
     set softtabstop=2                               " "tab" feels like <tab>
     set tabstop=2                                   " replace <TAB> w/4 spaces
     """ Only auto-comment newline for block comments {{{
-        au FileType c,cpp setlocal comments -=:// comments +=f://
+        augroup AutoBlockComment
+            autocmd! FileType c,cpp setlocal comments -=:// comments +=f://
+        augroup END
+    """ }}}
+    """ Take comment leaders into account when joining lines, :h fo-table
+    """ http://ftp.vim.org/pub/vim/patches/7.3/7.3.541 {{{
+        if has("patch-7.3.541")
+            set formatoptions+=j
+        endif
     """ }}}
 """ }}}
 """ Keybindings {{{
@@ -256,9 +284,6 @@ set nocompatible
         " Yank(copy) to system clipboard
         noremap <leader>y "+y
 
-        " Toggle text wrapping
-        nmap <silent> <leader>w :set invwrap<CR>:set wrap?<CR>
-
         " Toggle folding
         nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
         vnoremap <Space> zf
@@ -269,7 +294,7 @@ set nocompatible
         vmap <C-up> [egv
         vmap <C-down> ]egv
 
-        " Move faster
+        " Scroll up/down lines from 'scroll' option, default half a screen
         map <C-j> <C-d>
         map <C-k> <C-u>
 
@@ -329,8 +354,6 @@ set nocompatible
             nnoremap <leader>h :call ToggleOverLength()<CR>
         """ }}}
         """ Toggle relativenumber using <leader>r {{{
-            nnoremap <leader>r :call NumberToggle()<CR>
-
             function! NumberToggle()
                 if(&relativenumber == 1)
                     set number
@@ -338,6 +361,22 @@ set nocompatible
                     set relativenumber
                 endif
             endfunction
+
+            nnoremap <leader>r :call NumberToggle()<CR>
+        """ }}}
+        """ Toggle text wrapping, wrap on whole words
+        """ For more info see: http://stackoverflow.com/a/2470885/1076493 {{{
+            function! WrapToggle()
+                if &wrap
+                    set list
+                    set nowrap
+                else
+                    set nolist
+                    set wrap
+                endif
+            endfunction
+
+            nnoremap <leader>w :call WrapToggle()<CR>
         """ }}}
         """ Remove multiple empty lines {{{
             function! DeleteMultipleEmptyLines()
@@ -361,7 +400,7 @@ set nocompatible
 
             nnoremap <leader>le :call SplitRelSrc()<CR>
         """ }}}
-        """ Strip trailing whitespace, return to cursors at save {{{
+        """ Strip trailing whitespace, return to cursor at save {{{
             function! <SID>StripTrailingWhitespace()
                 let l = line(".")
                 let c = col(".")
@@ -369,8 +408,12 @@ set nocompatible
                 call cursor(l, c)
             endfunction
 
-            autocmd FileType c,cpp,conf,css,html,js,perl,python,sh autocmd
-                        \ BufWritePre <buffer> :call <SID>StripTrailingWhitespace()
+            augroup StripTrailingWhitespace
+                autocmd!
+                autocmd FileType c,cpp,conf,css,html,perl,python,sh
+                            \ autocmd BufWritePre <buffer> :call
+                            \ <SID>StripTrailingWhitespace()
+            augroup END
         """ }}}
     """ }}}
     """ Plugins {{{
@@ -526,14 +569,15 @@ set nocompatible
             return lightline#statusline(0)
         endfunction
 
-        augroup AutoSyntastic
-            autocmd!
-            autocmd BufWritePost *.c,*.cpp,*.perl,*py call s:syntastic()
-        augroup END
         function! s:syntastic()
             SyntasticCheck
             call lightline#update()
         endfunction
+
+        augroup AutoSyntastic
+            autocmd!
+            autocmd BufWritePost *.c,*.cpp,*.perl,*py call s:syntastic()
+        augroup END
     """ }}}
 
     " Startify, the fancy start page
@@ -567,9 +611,17 @@ set nocompatible
         \ 'active_filetypes':
             \ ['c', 'cpp', 'perl', 'python'] }
 
+    " Netrw - the bundled (network) file and directory browser
+    let g:netrw_banner = 0
+    let g:netrw_list_hide = '^\.$'
+    let g:netrw_liststyle = 3
+
     " Automatically remove preview window after autocomplete (mainly for clang_complete)
-    autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-    autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    augroup RemovePreview
+        autocmd!
+        autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+        autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    augroup END
 """ }}}
 """ Local ending config, will overwrite anything above. Generally use this. {{{{
     if filereadable($HOME."/.vimrc.last")
