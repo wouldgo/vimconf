@@ -116,12 +116,13 @@ set nocompatible
         syntax on                                   " syntax highlighting
         set background=dark                         " we're using a dark bg
         colorscheme jellybeans                      " colorscheme from plugin
-        """ .txt w/highlight, plaintex is useless, markdown for .md {{{
+        """ force behavior and filetypes, and by extension highlighting {{{
             augroup FileTypeRules
                 autocmd!
-                autocmd BufNewFile,BufRead *.txt set ft=sh tw=79
-                autocmd BufNewFile,BufRead *.tex set ft=tex tw=79
+                autocmd BufNewFile,BufRead *.conf set ft=cfg tw=79
                 autocmd BufNewFile,BufRead *.md set ft=markdown tw=79
+                autocmd BufNewFile,BufRead *.tex set ft=tex tw=79
+                autocmd BufNewFile,BufRead *.txt set ft=sh tw=79
             augroup END
         """ }}}
         """ 256 colors for maximum jellybeans bling. See commit log for info {{{
@@ -302,9 +303,6 @@ set nocompatible
         nnoremap j gj
         nnoremap k gk
 
-        " Working ci(, works for both breaklined, inline and multiple ()
-        nnoremap ci( %ci(
-
         " We don't need any help!
         inoremap <F1> <nop>
         nnoremap <F1> <nop>
@@ -319,7 +317,24 @@ set nocompatible
         nnoremap gd :bdelete<CR>
         nnoremap gf <C-^>
     """ }}}
-    """ Functions or fancy binds {{{{
+    """ Functions and/or fancy keybinds {{{{
+        """ Vim motion on next found object like ci", but for ([{< etc
+        """ - http://stackoverflow.com/a/14651443/1076493
+        """ Based on gist by @AndrewRadev
+        """ - https://gist.github.com/AndrewRadev/1171559
+        """ For a crazier version with directions, more objects etc. see
+        """ - https://bitbucket.org/sjl/dotfiles/src/default/vim/vimrc {{{
+            function! s:NextTextObject(motion)
+                echo
+                let c = nr2char(getchar())
+                exe "normal! f".c."v".a:motion.c
+            endfunction
+
+            onoremap a :<C-u>call <SID>NextTextObject('a')<CR>
+            xnoremap a :<C-u>call <SID>NextTextObject('a')<CR>
+            onoremap i :<C-u>call <SID>NextTextObject('i')<CR>
+            xnoremap i :<C-u>call <SID>NextTextObject('i')<CR>
+        """ }}}
         """ Toggle syntax highlighting {{{
             function! ToggleSyntaxHighlighthing()
                 if exists("g:syntax_on")
@@ -410,7 +425,7 @@ set nocompatible
 
             augroup StripTrailingWhitespace
                 autocmd!
-                autocmd FileType c,cpp,conf,css,html,perl,python,sh
+                autocmd FileType c,cpp,cfg,conf,css,html,perl,python,sh,tex
                             \ autocmd BufWritePre <buffer> :call
                             \ <SID>StripTrailingWhitespace()
             augroup END
