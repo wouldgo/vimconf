@@ -119,7 +119,6 @@ set nocompatible
         """ force behavior and filetypes, and by extension highlighting {{{
             augroup FileTypeRules
                 autocmd!
-                autocmd BufNewFile,BufRead *.conf set ft=cfg tw=79
                 autocmd BufNewFile,BufRead *.md set ft=markdown tw=79
                 autocmd BufNewFile,BufRead *.tex set ft=tex tw=79
                 autocmd BufNewFile,BufRead *.txt set ft=sh tw=79
@@ -129,11 +128,6 @@ set nocompatible
             if (&term =~ "xterm") || (&term =~ "screen")
                 set t_Co=256
             endif
-        """ }}}
-        """ Tab colors, overwritten by lightline(?) {{{
-            "hi TabLineFill ctermfg=NONE ctermbg=233
-            "hi TabLine ctermfg=241 ctermbg=233
-            "hi TabLineSel ctermfg=250 ctermbg=233
         """ }}}
         """ Custom highlighting, where NONE uses terminal background {{{
             function! CustomHighlighting()
@@ -444,6 +438,49 @@ set nocompatible
     """ }}}
 """ }}}
 """ Plugin settings {{{
+    " Startify, the fancy start page
+    let g:ctrlp_reuse_window = 'startify' " don't split in startify
+    let g:startify_bookmarks = [
+        \ $HOME . "/.vimrc", $HOME . "/.vimrc.first",
+        \ $HOME . "/.vimrc.last", $HOME . "/.vimrc.plugins"
+        \ ]
+    let g:startify_custom_header = [
+        \ '   Author:      Tim Sæterøy',
+        \ '   Homepage:    http://thevoid.no',
+        \ '   Source:      http://github.com/timss/vimconf',
+        \ ''
+        \ ]
+
+    " CtrlP - don't recalculate files on start (slow)
+    let g:ctrlp_clear_cache_on_exit = 0
+    let g:ctrlp_working_path_mode = 'ra'
+
+    " TagBar
+    let g:tagbar_left = 0
+    let g:tagbar_width = 30
+    set tags=tags;/
+
+    " Syntastic - This is largely up to your own usage, and override these
+    "             changes if be needed. This is merely an exemplification.
+    let g:syntastic_cpp_check_header = 1
+    let g:syntastic_cpp_compiler_options = ' -std=c++0x'
+    let g:syntastic_mode_map = {
+        \ 'mode': 'passive',
+        \ 'active_filetypes':
+            \ ['c', 'cpp', 'perl', 'python', 'sh'] }
+
+    " Netrw - the bundled (network) file and directory browser
+    let g:netrw_banner = 0
+    let g:netrw_list_hide = '^\.$'
+    let g:netrw_liststyle = 3
+
+    " Automatically remove preview window after autocomplete (mainly for clang_complete)
+    augroup RemovePreview
+        autocmd!
+        autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+        autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+    augroup END
+
     """ Lightline {{{
         let g:lightline = {
             \ 'colorscheme': 'jellybeans',
@@ -591,52 +628,11 @@ set nocompatible
 
         augroup AutoSyntastic
             autocmd!
-            autocmd BufWritePost *.c,*.cpp,*.perl,*py call s:syntastic()
+            execute "autocmd FileType " .
+                        \join(g:syntastic_mode_map["active_filetypes"], ",") .
+                        \" autocmd BufWritePost <buffer> :call s:syntastic()"
         augroup END
     """ }}}
-
-    " Startify, the fancy start page
-    let g:ctrlp_reuse_window = 'startify' " don't split in startify
-    let g:startify_bookmarks = [
-        \ $HOME . "/.vimrc", $HOME . "/.vimrc.first",
-        \ $HOME . "/.vimrc.last", $HOME . "/.vimrc.plugins"
-        \ ]
-    let g:startify_custom_header = [
-        \ '   Author:      Tim Sæterøy',
-        \ '   Homepage:    http://thevoid.no',
-        \ '   Source:      http://github.com/timss/vimconf',
-        \ ''
-        \ ]
-
-    " CtrlP - don't recalculate files on start (slow)
-    let g:ctrlp_clear_cache_on_exit = 0
-    let g:ctrlp_working_path_mode = 'ra'
-
-    " TagBar
-    let g:tagbar_left = 0
-    let g:tagbar_width = 30
-    set tags=tags;/
-
-    " Syntastic - This is largely up to your own usage, and override these
-    "             changes if be needed. This is merely an exemplification.
-    let g:syntastic_cpp_check_header = 1
-    let g:syntastic_cpp_compiler_options = ' -std=c++0x'
-    let g:syntastic_mode_map = {
-        \ 'mode': 'passive',
-        \ 'active_filetypes':
-            \ ['c', 'cpp', 'perl', 'python'] }
-
-    " Netrw - the bundled (network) file and directory browser
-    let g:netrw_banner = 0
-    let g:netrw_list_hide = '^\.$'
-    let g:netrw_liststyle = 3
-
-    " Automatically remove preview window after autocomplete (mainly for clang_complete)
-    augroup RemovePreview
-        autocmd!
-        autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-        autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-    augroup END
 """ }}}
 """ Local ending config, will overwrite anything above. Generally use this. {{{{
     if filereadable($HOME."/.vimrc.last")
