@@ -87,6 +87,9 @@
         " Functions, class data etc.
         " REQUIREMENTS: (exuberant)-ctags
         Plugin 'majutsushi/tagbar'
+
+        " Rust.vim syntax
+        Plugin 'rust-lang/rust.vim'
     """ }}}
     """ Finish Vundle stuff {{{
         call vundle#end()
@@ -419,7 +422,6 @@
         noremap <silent><leader>lo :Errors<CR>
         noremap <silent><leader>lc :lclose<CR>
     """ }}}
-""" }}}
 """ Plugin settings {{{
     """ Startify {{{
         let g:startify_bookmarks = [
