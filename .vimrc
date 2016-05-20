@@ -57,7 +57,7 @@
         Plugin 'scrooloose/nerdcommenter'
 
         " Autoclose (, " etc
-        Plugin 'ivang/vim-autoclose'
+        Plugin 'somini/vim-autoclose'
 
         " Git wrapper inside Vim
         Plugin 'tpope/vim-fugitive'
@@ -399,7 +399,7 @@
             nnoremap <leader>le :call SplitRelSrc()<CR>
         """ }}}
         """ Strip trailing whitespace, return to cursor at save {{{
-            function! <SID>StripTrailingWhitespace()
+            function! StripTrailingWhitespace()
                 let l = line(".")
                 let c = col(".")
                 %s/\s\+$//e
@@ -408,9 +408,9 @@
 
             augroup StripTrailingWhitespace
                 autocmd!
-                autocmd FileType c,cpp,cfg,conf,css,html,perl,python,sh,tex
+                autocmd FileType c,cpp,cfg,conf,css,html,perl,python,sh,tex,yaml
                     \ autocmd BufWritePre <buffer> :call
-                    \ <SID>StripTrailingWhitespace()
+                    \ StripTrailingWhitespace()
             augroup END
         """ }}}
     """ }}}
