@@ -1,5 +1,5 @@
 "-----------------------------------------"
-" Source: http://github.com/timss/vimconf "
+" Source: http://github.com/wouldgo/vimconf "
 "-----------------------------------------"
 
 """ vimconf is not vi-compatible {{{
@@ -51,7 +51,7 @@
         Plugin 'bling/vim-bufferline'
 
         " Glorious colorscheme
-        Plugin 'nanotech/jellybeans.vim'
+        Plugin 'dracula/vim'
 
         " Super easy commenting, toggle comments etc
         Plugin 'scrooloose/nerdcommenter'
@@ -110,8 +110,7 @@
     """ Syntax highlighting {{{
         filetype plugin indent on                   " detect file plugin+indent
         syntax on                                   " syntax highlighting
-        set background=dark                         " we're using a dark bg
-        colorscheme jellybeans                      " colorscheme from plugin
+        color dracula                               " colorscheme from plugin
         """ Force behavior and filetypes, and by extension highlighting {{{
             augroup FileTypeRules
                 autocmd!
@@ -120,7 +119,7 @@
                 autocmd BufNewFile,BufRead *.txt set ft=sh tw=79
             augroup END
         """ }}}
-        """ 256 colors for maximum jellybeans bling. See commit log for info {{{
+        """ 256 colors for maximum {{{
             if (&term =~ "xterm") || (&term =~ "screen")
                 set t_Co=256
             endif
@@ -333,7 +332,7 @@
         """ Highlight characters past 79, toggle with <leader>h {{{
         """ You might want to override this function and its variables with
         """ your own in .vimrc.last which might set for example colorcolumn or
-        """ even the textwidth. See https://github.com/timss/vimconf/pull/4
+        """ even the textwidth. 
             let g:overlength_enabled = 0
             highlight OverLength ctermbg=238 guibg=#444444
 
@@ -429,7 +428,7 @@
             \ $HOME . "/.vimrc.last", $HOME . "/.vimrc.plugins"
             \ ]
         let g:startify_custom_header = [
-            \ '   http://github.com/timss/vimconf',
+            \ '   http://github.com/wouldgo/vimconf',
             \ ''
             \ ]
         let g:startify_files_number = 5
@@ -462,11 +461,6 @@
 
         " Skip check on :wq, :x, :ZZ etc
         let g:syntastic_check_on_wq = 0
-    """ }}}
-    """ Netrw {{{
-        let g:netrw_banner = 0
-        let g:netrw_list_hide = '^\.$'
-        let g:netrw_liststyle = 3
     """ }}}
     """ Supertab {{{
         " Complete based on context (compl-omni, compl-filename, ..)
@@ -501,7 +495,7 @@
     """ }}}
     """ Lightline {{{
         let g:lightline = {
-            \ 'colorscheme': 'jellybeans',
+            \ 'color': 'dracula',
             \ 'active': {
             \     'left': [
             \         ['mode', 'paste'],
