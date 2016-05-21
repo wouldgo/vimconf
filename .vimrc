@@ -88,6 +88,11 @@
         " REQUIREMENTS: (exuberant)-ctags
         Plugin 'majutsushi/tagbar'
 
+        " Nerdtree
+        Plugin 'scrooloose/nerdtree'
+        Plugin 'Xuyuanp/nerdtree-git-plugin'
+        Plugin 'jistr/vim-nerdtree-tabs'
+
         " Rust.vim syntax
         Plugin 'rust-lang/rust.vim'
     """ }}}
@@ -461,6 +466,21 @@
 
         " Skip check on :wq, :x, :ZZ etc
         let g:syntastic_check_on_wq = 0
+    """ }}}
+    """ Nerdtree {{{
+        autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+        map <Leader>n <plug>NERDTreeTabsToggle<CR>
+        let g:NERDTreeIndicatorMapCustom = {
+            \ "Modified"  : "✹",
+            \ "Staged"    : "✚",
+            \ "Untracked" : "✭",
+            \ "Renamed"   : "➜",
+            \ "Unmerged"  : "═",
+            \ "Deleted"   : "✖",
+            \ "Dirty"     : "✗",
+            \ "Clean"     : "✔︎",
+            \ "Unknown"   : "?"
+            \ }
     """ }}}
     """ Supertab {{{
         " Complete based on context (compl-omni, compl-filename, ..)
