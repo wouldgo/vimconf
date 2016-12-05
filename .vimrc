@@ -19,7 +19,7 @@
             echo "Installing Vundle..."
             echo ""
             silent !mkdir -p $HOME/.vim/bundle
-            silent !git clone https://github.com/gmarik/Vundle.vim $HOME/.vim/bundle/Vundle.vim
+            silent !git clone https://github.com/VundleVim/Vundle.vim $HOME/.vim/bundle/Vundle.vim
             let has_vundle=0
         endif
     """ }}}
@@ -29,16 +29,13 @@
         call vundle#begin()                         " init vundle
     """ }}}
     """ Github repos, uncomment to disable a plugin {{{
-        Plugin 'gmarik/Vundle.vim'
+        Plugin 'VundleVim/Vundle.vim'
 
         """ Local plugins (and only plugins in this file!) {{{
             if filereadable($HOME."/.vimrc.plugins")
                 source $HOME/.vimrc.plugins
             endif
         """ }}}
-
-        " Edit files using sudo/su
-        Plugin 'chrisbra/SudoEdit.vim'
 
         " <Tab> everything!
         Plugin 'ervandew/supertab'
@@ -50,6 +47,9 @@
         Plugin 'itchyny/lightline.vim'
         Plugin 'bling/vim-bufferline'
 
+        " Undo history visualizer
+        Plugin 'mbbill/undotree'
+
         " Glorious colorscheme
         Plugin 'dracula/vim'
 
@@ -58,6 +58,9 @@
 
         " Autoclose (, " etc
         Plugin 'somini/vim-autoclose'
+
+        " UNIX shell command helpers, e.g. sudo, chmod, remove etc.
+        Plugin 'tpope/vim-eunuch'
 
         " Git wrapper inside Vim
         Plugin 'tpope/vim-fugitive'
@@ -167,7 +170,6 @@
     set completeopt=menu,preview,longest            " insert mode completion
     set hidden                                      " buffer change, more undo
     set history=1000                                " default 20
-    set iskeyword+=_,$,@,%,#                        " not word dividers
     set laststatus=2                                " always show statusline
     set linebreak                                   " don't cut words on wrap
     set listchars=tab:>\                            " > to highlight <tab>
@@ -309,9 +311,6 @@
         nnoremap <F1> <nop>
         vnoremap <F1> <nop>
 
-        " Disable annoying ex mode (Q)
-        map Q <nop>
-
         " Buffers, preferred over tabs now with bufferline.
         nnoremap gn :bnext<CR>
         nnoremap gN :bprevious<CR>
@@ -422,6 +421,9 @@
         " Toggle tagbar (definitions, functions etc.)
         map <F1> :TagbarToggle<CR>
 
+        " Toggle undo history tree
+        nnoremap <F5> :UndotreeToggle<CR>
+
         " Syntastic - toggle error list. Probably should be toggleable.
         noremap <silent><leader>lo :Errors<CR>
         noremap <silent><leader>lc :lclose<CR>
@@ -488,7 +490,7 @@
 
         " Longest common match, e.g. 'b<tab>' => 'bar' for 'barbar', 'barfoo'
         let g:SuperTabLongestEnhanced = 1
-        let g:SuperTabLongestHighlight = 1
+        let g:SuperTabLongestHighlight = 0
     """ }}}
     """ SnipMate {{{
         " Disable '.' => 'self' Python snippet
