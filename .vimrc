@@ -98,6 +98,9 @@
 
         " Rust.vim syntax
         Plugin 'rust-lang/rust.vim'
+
+        " Tmux vim syntax
+        Plugin 'tmux-plugins/vim-tmux'
     """ }}}
     """ Finish Vundle stuff {{{
         call vundle#end()
