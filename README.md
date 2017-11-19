@@ -1,20 +1,25 @@
 vimconf
 =======
+
 * Super easy to install and extend
 * Everything in the vimrc is explained
 * A universal configuration with a syntax checker, plugin manager and more
 
 Installation
 ------------
-**Dependencies:** [Exuberant ctags](http://ctags.sourceforge.net/) (tagbar)
 
-    git clone https://github.com/timss/vimconf.git
-    ln -s vimconf/.vimrc ~/.vimrc
+**Dependencies:** [exuberant](http://ctags.sourceforge.net/)/[universal](https://github.com/universal-ctags/ctags) ctags (tagbar)
+
+```sh
+git clone https://github.com/timss/vimconf.git
+ln -s vimconf/.vimrc ~/.vimrc
+```
 
 Run vim and it'll download and install all plugins automatically!
 
 Configuration
 -------------
+
 If you choose to symlink your `~/.vimrc` you can easily maintain an updated
 version of this vim configuration by using the local additions.
 
@@ -33,6 +38,24 @@ Some useful plugins could be:
 * [jedi-vim](https://github.com/davidhalter/jedi-vim) - Python autocompletion using the Jedi library.
 * [YouCompleteMe](https://github.com/Valloric/YouCompleteMe) - Autocompletion for several languages (C/C++, Python, ...)
 
+### Disabling plugins
+
+If you want to disable any of the plugins included in the main configuration
+either `UnPlug` them:
+
+```viml
+UnPlug 'ervandew/supertab'
+UnPlug 'vim-syntastic/syntastic'
+```
+
+Or define a list of repo names to be disabled:
+
+```viml
+let g:plugs_disabled = ['supertab', 'syntastic']
+```
+
+Both should be added to `~/.vimrc.plugins`.
+
 Preview
 -------
 
@@ -42,6 +65,7 @@ Preview
 
 Disclaimer
 ----------
+
 Even if this configuration can be used out of the box or tweaked using
 the local files, I urge you to build your own if you have the time and
 energy to do so. Only then will you be able to properly understand the
@@ -54,9 +78,11 @@ suit you perfectly. It's intended to be played with!
 
 Todo
 ----
+
 * Update preview (gifs)
 * Extract some language/plugin specific configuration to an example file (wiki)?
-* Swap Vundle with NeoBundle or vimplug for lazy loading of plugins, especially
-  `$HOME/.vimrc.plugins`?
-* Move functions to `$HOME/.vim/autoload`? See
-  [How can I reduce startup time for vim?](http://stackoverflow.com/a/21197543/1076493)
+* Lazy loading
+    * Analyze `--startuptime`
+    * Add conditional plugin loading for plugins that don't properly lazy load
+    * Move functions to `$HOME/.vim/autoload`?  
+    See [How can I reduce startup time for vim?](http://stackoverflow.com/a/21197543/1076493)
