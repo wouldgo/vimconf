@@ -456,6 +456,7 @@
     """ Nerdtree {{{
         autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
         map <Leader>n <plug>NERDTreeTabsToggle<CR>
+        let g:NERDTreeQuitOnOpen=1
         let g:NERDTreeIndicatorMapCustom = {
             \ "Modified"  : "✹",
             \ "Staged"    : "✚",
