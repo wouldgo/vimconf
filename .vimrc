@@ -103,9 +103,6 @@
         Plug 'majutsushi/tagbar'
     endif
 
-    " GoLang
-    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
     " Local plugins
     if filereadable($HOME.'/.vimrc.plugins')
         source $HOME/.vimrc.plugins
