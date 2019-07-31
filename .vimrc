@@ -104,7 +104,7 @@
     endif
 
     " GoLang
-    Plug 'fatih/vim-go'
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
     " Local plugins
     if filereadable($HOME.'/.vimrc.plugins')
