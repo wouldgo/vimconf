@@ -103,6 +103,9 @@
         Plug 'majutsushi/tagbar'
     endif
 
+    " GoLang
+    Plug 'fatih/vim-go'
+
     " Local plugins
     if filereadable($HOME.'/.vimrc.plugins')
         source $HOME/.vimrc.plugins
